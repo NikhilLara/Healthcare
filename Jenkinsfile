@@ -55,7 +55,26 @@ pipeline {
                             }
                         }
                     }
-            
+
+            stage('Create Docker Image') {
+                    steps {
+                        sh 'docker build -t nikhillara1989/healthcare:1.0 .'
+                        }
+                    }
+
+            stage('Docker-Login') {
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'dockerhub-login', passwordVariable: 'dockerpassword', usernameVariable: 'Dockerlogin')]) {
+                            sh 'docker-login -u ${dockerhub-login} -p {dockerpassword}'
+                            }
+                        }
+                    }
+
+            stage('Docker Push') {
+                    steps {
+                        sh 'docker push nikhillara1989/healthcare:1.0'
+                        }
+                    }
             
        
 }
