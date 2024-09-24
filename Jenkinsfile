@@ -6,6 +6,9 @@ pipeline {
         maven "M2_HOME"
     }
 
+    environment {
+        SCANNER_HOME= tool 'sonar-scanner'
+
     stages {
         stage('Build') {
             steps {
@@ -22,7 +25,21 @@ pipeline {
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
-          
+
+            stage('Trivy FS Scan') { 
+                steps {
+                    sh 'trivy fs --format table -o fs.html .' 
+                } 
+            }
+
+            stage('SonarQube Analysis') { 
+                steps {
+                    withSonarQubeEnv('sonar-server') { 
+                        sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Healthcare -Dsonar.projectKey=Healthcare\
+                                -Dsonar.java.binaries=target'''
+                            } 
+                        }
+                    }
                 
         
             
