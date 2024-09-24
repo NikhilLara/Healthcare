@@ -28,51 +28,51 @@ pipeline {
                         }
                     }
 
-            stage('Trivy FS Scan') { 
-                steps {
-                    sh 'trivy fs --format table -o fs.html .' 
+        stage('Trivy FS Scan') { 
+             steps {
+                 sh 'trivy fs --format table -o fs.html .' 
                 } 
             }
 
-            stage('SonarQube Analysis') { 
-                steps {
-                    withSonarQubeEnv('sonar-server') { 
-                        sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Healthcare -Dsonar.projectKey=Healthcare\
-                                -Dsonar.java.binaries=target'''
+        stage('SonarQube Analysis') { 
+             steps {
+                 withSonarQubeEnv('sonar-server') { 
+                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Healthcare -Dsonar.projectKey=Healthcare\
+                             -Dsonar.java.binaries=target'''
                             } 
                         }
                     }
-            stage('Build') {
-                    steps {
-                        sh "mvn package"
+        stage('Build') {
+                steps {
+                    sh "mvn package"
                         }
                     }
                 
-            stage('Publish Artifacts') {
-                    steps {
-                        withMaven(globalMavenSettingsConfig: 'maven-settings', jdk: 'JAVA_HOME', maven: 'M2_HOME', mavenSettingsConfig: '', traceability: true) {
-                            sh "mvn deploy"
+        stage('Publish Artifacts') {
+                steps {
+                    withMaven(globalMavenSettingsConfig: 'maven-settings', jdk: 'JAVA_HOME', maven: 'M2_HOME', mavenSettingsConfig: '', traceability: true) {
+                        sh "mvn deploy"
                             }
                         }
                     }
 
-            stage('Create Docker Image') {
-                    steps {
-                        sh 'docker build -t nikhillara1989/healthcare:1.0 .'
+        stage('Create Docker Image') {
+                steps {
+                    sh 'docker build -t nikhillara1989/healthcare:1.0 .'
                         }
                     }
 
-            stage('Docker-Login') {
-                    steps {
-                        withCredentials([usernamePassword(credentialsId: 'dockerhub-login', passwordVariable: 'dockerpassword', usernameVariable: 'Dockerlogin')]) {
-                            sh 'docker-login -u ${dockerhub-login} -p ${dockerpassword}'
+        stage('Docker-Login') {
+                steps {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-login', passwordVariable: 'dockerpassword', usernameVariable: 'Dockerlogin')]) {
+                        sh 'docker login -u ${Dockerlogin} -p ${dockerpassword}'
                             }
                         }
                     }
 
-            stage('Docker Push') {
-                    steps {
-                        sh 'docker push nikhillara1989/healthcare:1.0'
+        stage('Docker Push') {
+                steps {
+                    sh 'docker push nikhillara1989/healthcare:1.0'
                         }
                     }
             
