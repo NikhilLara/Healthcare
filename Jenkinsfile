@@ -22,12 +22,6 @@ pipeline {
                     }
                 }
 
-            stage('Generate Test Reports') {
-            steps {
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-                        }
-                    }
-
             stage('Trivy FS Scan') { 
                 steps {
                     sh 'trivy fs --format table -o fs.html .' 
@@ -53,6 +47,11 @@ pipeline {
                         withMaven(globalMavenSettingsConfig: 'maven-settings', jdk: 'JAVA_HOME', maven: 'M2_HOME', mavenSettingsConfig: '', traceability: true) {
                             sh "mvn deploy"
                             }
+                        }
+                    }
+            stage('Generate Test Reports') {
+            steps {
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
             
