@@ -40,9 +40,21 @@ pipeline {
                             } 
                         }
                     }
+            stage('Build') {
+                    steps {
+                        sh "mvn package"
+                        }
+                    }
                 
-        
+            stage('Publish Artifacts') {
+                    steps {
+                        withMaven(globalMavenSettingsConfig: 'maven-settings', jdk: 'JAVA_HOME', maven: 'M2_HOME', mavenSettingsConfig: '', traceability: true) {
+                            sh "mvn deploy"
+                            }
+                        }
+                    }
             
        
-    }
+}
+}
 }
