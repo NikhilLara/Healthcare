@@ -12,7 +12,7 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        stage('Git Repository') {
             steps {
                 // Get some code from a GitHub repository
                 git 'https://github.com/NikhilLara/Healthcare.git'
