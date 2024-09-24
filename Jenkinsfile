@@ -12,7 +12,7 @@ pipeline {
     }
 
     stages {
-        stage('Git Repository') {
+        stage('Git Checkout') {
             steps {
                 // Get some code from a GitHub repository
                 git 'https://github.com/NikhilLara/Healthcare.git'
@@ -21,6 +21,12 @@ pipeline {
                 sh "mvn -Dmaven.test.failure.ignore=true clean package"
                     }
                 }
+
+        stage('Generate Test Reports') {
+            steps {
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    }
 
             stage('Trivy FS Scan') { 
                 steps {
@@ -49,11 +55,7 @@ pipeline {
                             }
                         }
                     }
-            stage('Generate Test Reports') {
-            steps {
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-                        }
-                    }
+            
             
        
 }
