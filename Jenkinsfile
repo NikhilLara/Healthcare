@@ -61,6 +61,11 @@ pipeline {
                     sh 'docker build -t nikhillara1989/healthcare:1.0 .'
                         }
                     }
+        stage('Trivy Image Scan') { 
+             steps {
+                 sh 'trivy image --format table -o image.html nikhillara1989/healthcare:1.0' 
+                } 
+            }
 
         stage('Docker-Login') {
                 steps {
