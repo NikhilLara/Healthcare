@@ -27,12 +27,6 @@ pipeline {
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
-
-        #stage('Trivy FS Scan') { 
-             #steps {
-                 #sh 'trivy fs --format table -o fs.html .' 
-                #} 
-            #}
         stage('Trivy FS Scan') {
               steps {
                     sh 'trivy fs --format table -o trivy_fs_scan_$(date +%Y-%m-%d_%H-%M-%S).html .'
