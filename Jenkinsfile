@@ -29,8 +29,7 @@ pipeline {
                     }
         stage('Trivy FS Scan') {
               steps {
-                    sh 'trivy fs --format table -o trivy_fs_scan_$(date +%Y-%m-%d_%H-%M-%S).html .'
-                    sh 'find . -maxdepth 1 -type f -name "trivy_fs_scan_*.html" -mtime +7 -delete' // Remove files older than 7 days
+                    sh 'trivy fs --format table -o fs.html .'
                     }
                 }
 
